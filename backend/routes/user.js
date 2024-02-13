@@ -1,7 +1,8 @@
 const express = require("express")
 const zod = require("zod")
-const { User } = require("../db")
+const { User, Account } = require("../db")
 const jwt = require("jsonwebtoken")
+const { authMiddleware } = require("../middleware")
 
 
 
@@ -12,7 +13,38 @@ const signupBody = zod.object({
     password:zod.string()
 })
 
+const updateBody = zod.object({
+    password:zod.string().optional(),
+    firstName:zod.string().optional(),
+    lastName:zod.string().optional()
+})
+
 const router = express.Router()
+
+router.get("/bulk",async(req,res)=>{
+    const filter = req.query.filter || ""
+
+
+    const users = await User.find({
+        $or:[{
+            firstName:{
+                "$regex":filter
+            }
+        },{
+            lastNmae:{
+                "$regex":filter
+            }
+        }]
+    })
+    res.status(200).json({
+        users:users.map(user => ({
+            username:user.username,
+            firstName:user.firstName,
+            lastName:user.lastName,
+            _id:user._id
+        }))
+    })
+})
 
 router.post("/signup",async(req,res)=>{
     const {success} = signupBody.safeParse(req.body)
@@ -36,6 +68,14 @@ router.post("/signup",async(req,res)=>{
     await user.save()
     const userId = user._id
 
+    const account = new Account({
+        userId,
+        balance: 1+ Math.random() * 10000
+
+    })
+
+    await account.save()
+
     const token = jwt.sign({
         userId
     },process.env.JWT_SECRET)
@@ -44,6 +84,20 @@ router.post("/signup",async(req,res)=>{
         message:"User created successfully",
         token:token
     })
+})
+
+router.put("/",authMiddleware,async(req,res)=>{
+    const {success} = updateBody.safeParse(req.body)
+    if(!success){
+        return res.status(411).json({
+            message: "Error while updating information"
+        })
+    }
+    await User.updateOne({_id:req.userId},req.body)
+    res.json({
+        message:"Updated successfully"
+    })
+
 })
 
 module.exports = router
