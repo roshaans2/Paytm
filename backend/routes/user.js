@@ -10,7 +10,7 @@ const signupBody = zod.object({
     username:zod.string().email(),
     firstName:zod.string(),
     lastName:zod.string(),
-    password:zod.string()
+    password:zod.string().min(6)
 })
 
 const updateBody = zod.object({
@@ -48,6 +48,7 @@ router.get("/bulk",async(req,res)=>{
 
 router.post("/signup",async(req,res)=>{
     const {success} = signupBody.safeParse(req.body)
+    console.log(success)
     if(!success){
         return res.status(411).json({
             message: "Incorrect inputs"
