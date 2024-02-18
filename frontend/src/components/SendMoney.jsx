@@ -21,7 +21,7 @@ const SendMoney = () => {
     }
 
     const handleSubmit = async() => {
-        await axios.post("http://localhost:3000/api/v1/account/transfer", {
+        await axios.post("https://paytm-2rfc.onrender.com/api/v1/account/transfer", {
             to: id,
             amount
         }, {

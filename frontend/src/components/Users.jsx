@@ -8,7 +8,7 @@ const Users = () => {
     const [filter,setFilter] = useState("")
     useEffect(()=>{
         const getUsers = async() => {
-            const response = await axios("http://localhost:3000/api/v1/user/bulk?filter="+filter)
+            const response = await axios("https://paytm-2rfc.onrender.com/api/v1/user/bulk?filter="+filter)
             setUsers(response.data.users)
         }
         getUsers()

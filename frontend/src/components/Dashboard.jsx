@@ -14,7 +14,7 @@ const Dashboard = () => {
     const name = localStorage.getItem("name")
     useEffect(()=>{
         const getBalance = async() => {
-            const data = await axios.get("http://localhost:3000/api/v1/account/balance",{
+            const data = await axios.get("https://paytm-2rfc.onrender.com/api/v1/account/balance",{
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem("token")
                 }
