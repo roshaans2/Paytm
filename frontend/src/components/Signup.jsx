@@ -22,6 +22,7 @@ const Signup = () => {
             password
         })
         localStorage.setItem("token",response.data.token)
+        localStorage.setItem("name",username)
         navigate("/dashboard")
     }
     return (

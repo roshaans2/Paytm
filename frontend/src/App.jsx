@@ -8,6 +8,7 @@ import Signup from './components/Signup'
 import Signin from './components/Signin'
 import SendMoney from './components/SendMoney'
 
+
 function App() {
   const [count, setCount] = useState(0)
 
@@ -16,6 +17,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/dashboard' element={<Dashboard/>}></Route>
+          <Route path='/' element={<Signup/>}></Route>
           <Route path='/signup' element={<Signup/>}></Route>
           <Route path='/signin' element={<Signin/>}></Route>
           <Route path='/send' element={<SendMoney/>}></Route>
