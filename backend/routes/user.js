@@ -3,6 +3,7 @@ const zod = require("zod")
 const { User, Account } = require("../db")
 const jwt = require("jsonwebtoken")
 const { authMiddleware } = require("../middleware")
+const bcrypt = require("bcrypt")
 
 
 
@@ -64,8 +65,9 @@ router.post("/signup",async(req,res)=>{
             message:"Email already taken"
         })
     }
-
-    const user = new User(req.body)
+    const {username,firstName,lastName,password} = req.body
+    const hashedPassword = await bcrypt.hash(password,10)
+    const user = new User({username:username,firstName:firstName,lastName:lastName,password:hashedPassword})
     await user.save()
     const userId = user._id
 
@@ -102,8 +104,13 @@ router.post("/signin", async (req, res) => {
 
     const user = await User.findOne({
         username: req.body.username,
-        password: req.body.password
     });
+
+    if(!bcrypt.compare(req.body.password,user.password)){
+        return res.status(411).json({
+            message:"Incorrect password"
+        })
+    }
 
     if (user) {
         const token = jwt.sign({
