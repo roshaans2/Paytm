@@ -52,7 +52,7 @@ router.post("/signup",async(req,res)=>{
     console.log(success)
     if(!success){
         return res.status(411).json({
-            message: "Incorrect inputs"
+            message: "Invalid Email/ Password too short"
         })
     }
 
